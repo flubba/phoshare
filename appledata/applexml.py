@@ -16,6 +16,7 @@
    
 import datetime
 import unicodedata
+import sys
 from xml import sax
 
 import tilutil.systemutils as su
@@ -31,6 +32,11 @@ def getappletime(value):
     except ValueError, _e:
         # bad time stamp in database, default to "now"
         return datetime.datetime.now()
+    except TypeError, _e:
+        # bad time stamp in database, default to "now"
+        sys.stdout.write("Invalid date value %s  defaulting to now. \n" % repr(value)) 
+        return datetime.datetime.now()     
+       
 
 class AppleXMLResolver(sax.handler.EntityResolver): #IGNORE:W0232
     '''Helper to deal with XML entity resolving'''
