@@ -101,7 +101,7 @@ class IPhotoData(object):
         if image_data:
             for key in image_data:
                 image = IPhotoImage(image_data.get(key), self.keywords,
-                                    self.face_names)
+                                    self.face_names, key)                    
                 self.images_by_id[key] = image
 
         album_data = self.data.get("List of Albums")
@@ -179,7 +179,7 @@ class IPhotoData(object):
         """returns map from full path name to image."""
         image_map = {}
         for image in self.images_by_id.values():
-            image_map[image.GetImagePath()] = image
+            image_map[image.getimagepath()] = image
             image_map[image.thumbpath] = image
             if image.originalpath is not None:
                 image_map[image.originalpath] = image
@@ -272,8 +272,9 @@ class IPhotoData(object):
 class IPhotoImage(object):
     """Describes an image in the iPhoto database."""
 
-    def __init__(self, data, keyword_map, face_map):
+    def __init__(self, data, keyword_map, face_map, key):
         self.data = data
+        self.key = key
         self._caption = sysutils.nn_string(data.get("Caption")).strip()
         self.comment = sysutils.nn_string(data.get("Comment")).strip()
         if data.has_key("DateAsTimerInterval"):
